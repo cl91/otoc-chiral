@@ -1,0 +1,15 @@
+*-debug
+*-opt
+*-gpu
+*-intel
+*-gpu-icpx
+Log*
+Avg*
+Ent*
+Rndst*
+Gndst*
+.gdb_history
+test
+old
+Green*
+OTOC*
