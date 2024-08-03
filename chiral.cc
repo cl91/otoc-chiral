@@ -97,6 +97,11 @@ private:
 	    want_greenfcn = want_otoc = true;
 	}
 
+	if (N <= 1) {
+	    std::cerr << "N must be at least two." << std::endl;
+	    return false;
+	}
+
 	if (truncate_fp64 && !(fp32 && fp64)) {
 	    std::cerr << "You cannot specify --truncate-fp64 unless you specified"
 		" both --fp32 and --fp64." << std::endl;
@@ -136,10 +141,10 @@ private:
     SumOps<FpType> sigma_z(int i) const {
 	return SpinOp<Fp>::sigma_z(i);
     }
-public:
     SpinOp<Fp> op(int i) const {
 	return SpinOp<Fp>::sigma_x(i);
     }
+public:
     template<typename RandGen>
     HamOp gen_ham(RandGen &rg) const {
 	HamOp ham;
@@ -320,9 +325,10 @@ class OTOC : public BaseEval<FpType> {
 				 const MatrixType<FpType> expmbH, FpType t) {
 	auto m0 = ham.matexp({0,-t});
 	auto m1 = ham.matexp({0,t});
-	auto op0 = m1 * chiral.op_0().get_matrix() * m0;
+	MatrixType<FpType> op0 = m1 * chiral.op_0().get_matrix() * m0;
 	auto op1 = chiral.op_1().get_matrix();
-	return (op0 * op1 * op0 * op1).trace();
+	MatrixType<FpType> op01 = op0 * op1;
+	return (op01 * op01 * expmbH).trace();
     }
 
 public:
